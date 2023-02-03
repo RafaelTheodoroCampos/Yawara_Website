@@ -34,7 +34,7 @@ public class User {
   private UUID id;
 
   @NotBlank
-  @Size(max= 100)
+  @Size(max = 100)
   private String username;
 
   @NotBlank
@@ -45,8 +45,10 @@ public class User {
   @Size(max = 120)
   private String password;
 
+  @Column(name = "activationcode")
   private String activationCode;
 
+  @Column(name = "isactive")
   private Boolean isActive;
 
   @Column(name = "last_login")
@@ -57,24 +59,27 @@ public class User {
 
   @Column(name = "updated_at")
   private Instant updatedAt;
-  
+
   @Column(name = "image_url")
   private String imageUrl;
 
   @ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(	name = "user_roles", 
-				joinColumns = @JoinColumn(name = "user_id"), 
-				inverseJoinColumns = @JoinColumn(name = "role_id"))
-	private Set<Role> roles = new HashSet<>();
+  @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+  private Set<Role> roles = new HashSet<>();
 
   public User() {
-	}
+  }
 
-  public User(String username, String email, String password, Boolean isActive) {
-		this.username = username;
-		this.email = email;
-		this.password = password;
+  public User(String username, String email, String password, Boolean isActive, Instant lastLogin, Instant createdAt,
+      Instant updatedAt, String imageUrl) {
+    this.username = username;
+    this.email = email;
+    this.password = password;
     this.isActive = isActive;
-	}
-  
+    this.lastLogin = lastLogin;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+    this.imageUrl = imageUrl;
+  }
+
 }

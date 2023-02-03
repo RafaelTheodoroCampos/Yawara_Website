@@ -23,5 +23,13 @@
     "error": "Forbidden",
     "message": "Access Denied",
     "Status": 403
+  },
+  "unprocessableEntityResponse": {
+    "code" : 422,
+    "status": "Bad Request!",
+    "message" : "Validation Error",
+    "erros" : [
+      "Exception: Error Description" 
+    ]
   }
 }
