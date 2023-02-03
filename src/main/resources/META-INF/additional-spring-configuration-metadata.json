@@ -1,0 +1,17 @@
+{"properties": [
+  {
+    "name": "yamarasolution.jwt.secret",
+    "type": "java.lang.String",
+    "description": "JWT secret value"
+  },
+  {
+    "name": "yamarasolution.jwt.expiration",
+    "type": "java.lang.String",
+    "description": "JWT expiration token value"
+  },
+  {
+    "name": "yamarasolution.jwt.refresh.expiration",
+    "type": "java.lang.String",
+    "description": "JWT expiration refresh token value"
+  }
+]}
