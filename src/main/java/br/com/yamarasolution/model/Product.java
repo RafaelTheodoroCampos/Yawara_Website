@@ -32,8 +32,11 @@ public class Product {
   @Column(name = "description", nullable = false)
   private String description;
   
-  @Column(name = "rating", nullable = false)
+  @Column(name = "isActive", nullable = false)
   private Double rating;
+
+  @Column(name = "rating", nullable = false)
+  private Boolean isActive;
   
   @Column(name = "price", nullable = false)
   private BigDecimal price;
