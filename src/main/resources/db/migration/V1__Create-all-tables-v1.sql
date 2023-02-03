@@ -13,7 +13,7 @@ CREATE TABLE users (
   isActive boolean NOT NULL,
   last_login timestamp with time zone NOT NULL,
   created_at timestamp DEFAULT current_timestamp,
-  updated_at timestamp DEFAULT NULL ON UPDATE current_timestamp,
+  updated_at timestamp DEFAULT NULL,
   image_url varchar(255) NOT NULL,
   PRIMARY KEY (id)
 );
@@ -26,15 +26,15 @@ CREATE TABLE product (
   price decimal(10,2) NOT NULL,
   stock decimal(10,2) NOT NULL,
   created_at timestamp DEFAULT current_timestamp,
-  updated_at timestamp DEFAULT NULL ON UPDATE current_timestamp,
+  updated_at timestamp DEFAULT NULL,
   image_url varchar(255) NOT NULL,
   created_by UUID,
   category_id UUID,
   PRIMARY KEY (id),
-  CONSTRAINT FK_product.category_id
+  CONSTRAINT FK_product_category_id
     FOREIGN KEY (category_id)
       REFERENCES category(id),
-  CONSTRAINT FK_product.created_by
+  CONSTRAINT FK_product_created_by
     FOREIGN KEY (created_by)
       REFERENCES users(id)
 );
@@ -56,7 +56,7 @@ CREATE TABLE donation (
   donation_date timestamp with time zone NOT NULL,
   donator_id UUID,
   PRIMARY KEY (id),
-  CONSTRAINT FK_donation.donator_id
+  CONSTRAINT FK_donation_donator_id
     FOREIGN KEY (donator_id)
       REFERENCES donator(id)
 );
@@ -70,10 +70,10 @@ CREATE TABLE roles (
 CREATE TABLE user_roles (
   user_id UUID NOT NULL,
   role_id UUID NOT NULL,
-  CONSTRAINT FK_user_roles.user_id
+  CONSTRAINT FK_user_roles_user_id
     FOREIGN KEY (user_id)
       REFERENCES users(id),
-  CONSTRAINT FK_user_roles.role_id
+  CONSTRAINT FK_user_roles_role_id
     FOREIGN KEY (role_id)
       REFERENCES roles(id)
 );
@@ -84,7 +84,7 @@ CREATE TABLE purchase (
   unit_price decimal(10,2) NOT NULL,
   product_id UUID,
   PRIMARY KEY (id),
-  CONSTRAINT FK_purchase.product_id
+  CONSTRAINT FK_purchase_product_id
     FOREIGN KEY (product_id)
       REFERENCES product(id)
 );
@@ -95,7 +95,7 @@ CREATE TABLE refreshtoken (
   token varchar(255) NOT NULL,
   user_id UUID,
   PRIMARY KEY (id),
-  CONSTRAINT FK_refreshtoken.user_id
+  CONSTRAINT FK_refreshtoken_user_id
     FOREIGN KEY (user_id)
       REFERENCES users(id)
 );
@@ -108,10 +108,10 @@ CREATE TABLE survey_question (
   donation_id UUID,
   donator_id UUID,
   PRIMARY KEY (id),
-  CONSTRAINT FK_survey_question.donation_id
+  CONSTRAINT FK_survey_question_donation_id
     FOREIGN KEY (donation_id)
       REFERENCES donation(id),
-  CONSTRAINT FK_survey_question.donator_id
+  CONSTRAINT FK_survey_question_donator_id
     FOREIGN KEY (donator_id)
       REFERENCES donator(id)
 );
@@ -122,10 +122,10 @@ CREATE TABLE user_purchase (
   total_price decimal(10,2) NOT NULL,
   purchase_status varchar(20) NOT NULL,
   purchase_date timestamp with time zone NOT NULL,
-  CONSTRAINT FK_user_purchase.user_id
+  CONSTRAINT FK_user_purchase_user_id
     FOREIGN KEY (user_id)
       REFERENCES users(id),
-  CONSTRAINT FK_user_purchase.purchase_id
+  CONSTRAINT FK_user_purchase_purchase_id
     FOREIGN KEY (purchase_id)
       REFERENCES purchase(id)
 );
