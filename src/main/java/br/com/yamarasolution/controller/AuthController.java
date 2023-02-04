@@ -22,6 +22,7 @@ import br.com.yamarasolution.DTO.auth.SignupRequest;
 import br.com.yamarasolution.DTO.auth.SignupResponse;
 import br.com.yamarasolution.DTO.auth.TokenRefreshResponse;
 import br.com.yamarasolution.exception.AccountExcpetion;
+import br.com.yamarasolution.exception.ApiError;
 import br.com.yamarasolution.exception.TokenRefreshException;
 import br.com.yamarasolution.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -60,7 +61,7 @@ public class AuthController {
       SignupResponse signupResponse = authService.authenticateUser(loginRequest);
       return ResponseEntity.ok().header("Authorization", signupResponse.getAccessToken()).body(signupResponse);
     } catch (AccountExcpetion e) {
-      return ResponseEntity.unprocessableEntity().body(e.getMessage());
+      return ResponseEntity.unprocessableEntity().body(new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, "Unprocessable Entity", e.getLocalizedMessage()));
     }
   }
 
@@ -82,7 +83,7 @@ public class AuthController {
       SignupRegisterResponse response = authService.registerUser(signUpRequest);
       return ResponseEntity.status(HttpStatus.CREATED).body(response);
     } catch (RuntimeException e) {
-      return ResponseEntity.unprocessableEntity().body(e.getMessage());
+      return ResponseEntity.unprocessableEntity().body(new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, "Unprocessable Entity", e.getLocalizedMessage()));
     }
   }
 
@@ -93,6 +94,8 @@ public class AuthController {
    * @param idUsuario UUID
    * @return The response is a list of roles that the user has.
    */
+  @PreAuthorize("hasRole('ADMIN')")
+  @PutMapping("/new-roles/{idUsuario}")
   @SecurityRequirement(name = "token")
   @Operation(description = "add news Roles", responses = {
       @ApiResponse(responseCode = "201", description = "Roles Register In!", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SignupRegisterResponse.class))),
@@ -102,14 +105,12 @@ public class AuthController {
       @ApiResponse(responseCode = "422", ref = "unprocessableEntity"),
       @ApiResponse(responseCode = "500", ref = "internalServerError")
   })
-  @PreAuthorize("hasRole('ADMIN')")
-  @PutMapping("/new-roles/{idUsuario}")
   public ResponseEntity<Object> newRoles(@Valid @RequestBody RoleRequest rolesIn, @PathVariable UUID idUsuario) {
     try {
       SignupRegisterResponse response = authService.newRoles(rolesIn, idUsuario);
       return ResponseEntity.status(HttpStatus.CREATED).body(response);
     } catch (AccountExcpetion e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
+      return ResponseEntity.unprocessableEntity().body(new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, "Unprocessable Entity", e.getLocalizedMessage()));
     }
   }
 
@@ -120,6 +121,8 @@ public class AuthController {
    * @param idUsuario UUID
    * @return The response is a list of roles that the user has.
    */
+  @PreAuthorize("hasRole('ADMIN')")
+  @PutMapping("/delete-roles/{idUsuario}")
   @SecurityRequirement(name = "token")
   @Operation(description = "add news Roles", responses = {
       @ApiResponse(responseCode = "201", description = "Roles Register In!", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SignupRegisterResponse.class))),
@@ -129,14 +132,12 @@ public class AuthController {
       @ApiResponse(responseCode = "422", ref = "unprocessableEntity"),
       @ApiResponse(responseCode = "500", ref = "internalServerError")
   })
-  @PreAuthorize("hasRole('ADMIN')")
-  @PutMapping("/delete-roles/{idUsuario}")
   public ResponseEntity<Object> removeRoles(@Valid @RequestBody RoleRequest rolesIn, @PathVariable UUID idUsuario) {
     try {
       SignupRegisterResponse response = authService.removeRoles(rolesIn, idUsuario);
       return ResponseEntity.status(HttpStatus.CREATED).body(response);
     } catch (AccountExcpetion e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
+      return ResponseEntity.unprocessableEntity().body(new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, "Unprocessable Entity", e.getLocalizedMessage()));
     }
   }
 
@@ -148,6 +149,7 @@ public class AuthController {
    * @param code The code that was sent to the user's email address.
    * @return ResponseEntity.badRequest().body(e.getMessage());
    */
+  @PutMapping("/confirm-account")
   @Operation(description = "register In Service", responses = {
       @ApiResponse(responseCode = "201", description = "Account activated successfully!"),
       @ApiResponse(responseCode = "400", ref = "BadRequest"),
@@ -155,13 +157,12 @@ public class AuthController {
       @ApiResponse(responseCode = "422", ref = "unprocessableEntity"),
       @ApiResponse(responseCode = "500", ref = "internalServerError")
   })
-  @PutMapping("/confirm-account")
   public ResponseEntity<Object> confirmAccount(@RequestParam("code") String code) {
     try {
       String response = authService.confirmAccount(code);
       return ResponseEntity.status(HttpStatus.CREATED).body(response);
     } catch (AccountExcpetion e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
+      return ResponseEntity.unprocessableEntity().body(new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, "Unprocessable Entity", e.getLocalizedMessage()));
     }
   }
 

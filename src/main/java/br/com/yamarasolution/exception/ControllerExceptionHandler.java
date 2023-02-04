@@ -24,8 +24,17 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
   private static final String UNPROCESSABLE_ENTITY_MESSAGE = "Unprocessable Entity";
 
+
+  /**
+   * If the exception is a DataIntegrityViolationException, MethodArgumentTypeMismatchException, or
+   * AccountException, then return a response entity with a status of 422 and a message of "Unprocessable
+   * Entity"
+   * 
+   * @param ex The exception that was thrown
+   * @return A ResponseEntity object is being returned.
+   */
   @ExceptionHandler({ DataIntegrityViolationException.class, MethodArgumentTypeMismatchException.class,
-      AccountExcpetion.class })
+      AccountExcpetion.class, CategoryException.class })
   public ResponseEntity<ApiError> handleExceptions(RuntimeException ex) {
     log.error("Error: ", ex);
     return new ResponseEntity<>(
@@ -33,6 +42,17 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
         HttpStatus.UNPROCESSABLE_ENTITY);
   }
 
+
+  /**
+   * It takes the exception, the headers, the status, and the request, and returns a response entity with
+   * the apiError, the headers, and the status
+   * 
+   * @param ex The exception that was thrown
+   * @param headers The HTTP headers to be written to the response.
+   * @param status The HTTP status code to return.
+   * @param request The current request.
+   * @return A ResponseEntity object.
+   */
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
       org.springframework.http.HttpHeaders headers, HttpStatusCode status, WebRequest request) {
@@ -43,6 +63,15 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(apiError, headers, status);
   }
 
+  /**
+   * This function is called when the request body is not readable
+   * 
+   * @param ex The exception that was thrown.
+   * @param headers The HTTP headers that were sent with the request.
+   * @param status The HTTP status code to return.
+   * @param request The current request.
+   * @return A ResponseEntity object.
+   */
   @Override
   protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers,
       HttpStatusCode status, WebRequest request) {
