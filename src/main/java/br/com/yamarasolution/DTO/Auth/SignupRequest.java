@@ -1,4 +1,4 @@
-package br.com.yamarasolution.DTO.Auth;
+package br.com.yamarasolution.DTO.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
