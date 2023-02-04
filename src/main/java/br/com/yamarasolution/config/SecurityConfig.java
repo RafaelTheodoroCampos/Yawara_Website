@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -69,9 +70,14 @@ public class SecurityConfig {
   protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
     http.cors().and().csrf().disable().authorizeHttpRequests()
-        .requestMatchers("/api/auth/signin", "/api/auth/signup", "/api/auth/refreshtoken", "/api/auth/confirm-account",
-            "/api/password-recovery/**")
-        .permitAll()
+        .requestMatchers(HttpMethod.POST, "/api/auth/signin").permitAll()
+        .requestMatchers(HttpMethod.POST, "/api/auth/signup").permitAll()
+        .requestMatchers(HttpMethod.POST, "/api/auth/refreshtoken").permitAll()
+        .requestMatchers(HttpMethod.POST, "/api/password-recovery/**").permitAll()
+        .requestMatchers(HttpMethod.PUT, "/api/auth/confirm-account").permitAll()
+        .requestMatchers(HttpMethod.GET, "/api/category").permitAll()
+        .requestMatchers(HttpMethod.GET, "/api/category/{id}").permitAll()
+        .requestMatchers(HttpMethod.GET, "/api/category/name/{name}").permitAll()
         .requestMatchers("/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
         .anyRequest()
         .authenticated().and().exceptionHandling().accessDeniedHandler(new AccessDeniedHandlerImpl()).and()
