@@ -1,12 +1,14 @@
 package br.com.yamarasolution.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.yamarasolution.exception.ApiError;
 import br.com.yamarasolution.service.PasswordRecoveryService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -58,9 +60,10 @@ public class PasswordRecoveryController {
   @Operation(description = "Password Recovery", responses = {
       @ApiResponse(responseCode = "200", description = "Password reset"),
       @ApiResponse(responseCode = "400", ref = "BadRequest"),
+      @ApiResponse(responseCode = "422", ref = "unprocessableEntity"),
       @ApiResponse(responseCode = "500", ref = "internalServerError")
   })
-  public ResponseEntity<String> resetPassword(@Valid @RequestParam String token,
+  public ResponseEntity<Object> resetPassword(@Valid @RequestParam String token,
       @RequestParam @NotNull @Size(min = 6, max= 40) String password) {
     try {
       if (service.resetPassword(token, password)) {
@@ -69,7 +72,7 @@ public class PasswordRecoveryController {
       return ResponseEntity.badRequest().body("Invalid password reset token");
     } catch (SignatureException | MalformedJwtException | ExpiredJwtException | UnsupportedJwtException
         | IllegalArgumentException e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
+          return ResponseEntity.unprocessableEntity().body(new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, "Unprocessable Entity", e.getLocalizedMessage()));
     }
   }
 }

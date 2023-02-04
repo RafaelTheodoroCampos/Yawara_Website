@@ -1,4 +1,4 @@
-package br.com.yamarasolution.DTO.Auth;
+package br.com.yamarasolution.DTO.auth;
 
 import java.util.List;
 import java.util.UUID;

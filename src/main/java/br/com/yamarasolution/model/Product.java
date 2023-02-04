@@ -32,10 +32,10 @@ public class Product {
   @Column(name = "description", nullable = false)
   private String description;
   
-  @Column(name = "isActive", nullable = false)
+  @Column(name = "rating", nullable = false)
   private Double rating;
 
-  @Column(name = "rating", nullable = false)
+  @Column(name = "isactive", nullable = false)
   private Boolean isActive;
   
   @Column(name = "price", nullable = false)
