@@ -1,7 +1,5 @@
 package br.com.yamarasolution.DTO.category;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import br.com.yamarasolution.model.Category;
@@ -20,15 +18,15 @@ public class CategoryResponseDTO {
 
   private String description;
 
-  private List<ProductCategoryResponseDTO> products = new ArrayList<>();
+  // private List<ProductCategoryResponseDTO> products = new ArrayList<>();
 
   public CategoryResponseDTO(Category c) {
     this.id = c.getId();
     this.name = c.getName();
     this.description = c.getDescription();
-    if (c.getProducts() != null) {
-      c.getProducts().forEach(product -> products.add(new ProductCategoryResponseDTO(product)));
-    }
+    // if (c.getProducts() != null) {
+    //   c.getProducts().forEach(product -> products.add(new ProductCategoryResponseDTO(product)));
+    // }
   }
 
 }
