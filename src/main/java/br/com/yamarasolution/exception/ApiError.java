@@ -1,5 +1,6 @@
 package br.com.yamarasolution.exception;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import org.springframework.http.HttpStatusCode;
 import lombok.Data;
 
 @Data
-public class ApiError {
+public class ApiError implements Serializable {
     private HttpStatus status;
     private String message;
     private List<String> errors;

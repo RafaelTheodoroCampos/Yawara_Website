@@ -27,9 +27,11 @@ import br.com.yamarasolution.config.MailConfig;
 import br.com.yamarasolution.enums.ERole;
 import br.com.yamarasolution.exception.AccountExcpetion;
 import br.com.yamarasolution.exception.TokenRefreshException;
+import br.com.yamarasolution.exception.UserException;
 import br.com.yamarasolution.model.RefreshToken;
 import br.com.yamarasolution.model.Role;
 import br.com.yamarasolution.model.User;
+import br.com.yamarasolution.repository.EmailChangeRequestRepository;
 import br.com.yamarasolution.repository.RoleRepository;
 import br.com.yamarasolution.repository.UserRepository;
 import br.com.yamarasolution.utils.JwtUtils;
@@ -58,6 +60,9 @@ public class AuthService {
 
   @Autowired
   private MailConfig mailConfig;
+
+  @Autowired
+  private EmailChangeRequestRepository emailChangeRequestRepository;
 
   /**
    * Update the last login time of the user with the given id.
@@ -121,14 +126,19 @@ public class AuthService {
       throw new AccountExcpetion("Error: Username is already taken!");
     }
 
-    if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+    if (userRepository.existsByEmailIgnoreCase(signUpRequest.getEmail())) {
       throw new AccountExcpetion("Error: Email is already in use!");
     }
+
+    emailChangeRequestRepository.findByNewEmailIgnoreCaseAndConfirmedFalse(signUpRequest.getEmail())
+        .ifPresent(request -> {
+          throw new UserException("Error: Email is already in use!");
+        });
 
     // Create new user's account
     User user = new User(signUpRequest.getUsername(), signUpRequest.getEmail(),
         encoder.encode(signUpRequest.getPassword()), false, null, Instant.now(), null,
-        "https://cdn.pixabay.com/photo/2016/04/01/11/25/avatar-1300331_960_720.png");
+        "https://cdn.pixabay.com/photo/2016/04/01/11/25/avatar-1300331_960_720.png", signUpRequest.getTelefone());
 
     Set<Role> roles = new HashSet<>();
     String activationCode = UUID.randomUUID().toString();

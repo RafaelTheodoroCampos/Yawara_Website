@@ -74,11 +74,11 @@ public class OpenApiConfig {
 
 		return new OpenAPI()
 				.components(components)
-				.info(new Info().title("VzStore API")
+				.info(new Info().title("Yamara Solution API")
 						.version("V0.0.1")
-						.description("API para a loja VzStore")
-						.contact(new Contact().name("Suporte VzStore").email("support@vzstore.com"))
-						.termsOfService("http://vzstore.com/terms")
+						.description("API para a loja Yamara Solution")
+						.contact(new Contact().name("Suporte Yamara Solution").email("support@YamaraSolution.com"))
+						.termsOfService("http://YamaraSolution.com/terms")
 						.license(new License().name("Apache 2.0").url("https://www.apache.org/licenses/LICENSE-2.0.html")));
 	}
 

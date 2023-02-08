@@ -75,7 +75,7 @@ public class CategoryService {
   public CategoryResponseDTO insertCategory(CategoryRequestDTO categoryRequest) {
 
     String name = categoryRequest.getName();
-    if (categoryRepository.existsByName(name)) {
+    if (categoryRepository.existsByNameIgnoreCase(name)) {
       throw new CategoryException("Name already exists for category name= " + name);
     }
 
@@ -102,7 +102,7 @@ public class CategoryService {
         .orElseThrow(() -> new CategoryException("Could not find category id= " + id));
 
     String name = categoryRequest.getName();
-    if (!category.getName().equalsIgnoreCase(name) && categoryRepository.existsByName(name)) {
+    if (!category.getName().equalsIgnoreCase(name) && categoryRepository.existsByNameIgnoreCase(name)) {
       throw new CategoryException("Name already exists for category name= " + name);
     }
 
@@ -119,6 +119,7 @@ public class CategoryService {
    * 
    * @param id The id of the category to delete
    */
+  @Transactional
   public void deleteCategory(UUID id) {
     Category category = categoryRepository.findById(id)
         .orElseThrow(() -> new CategoryException("Could not find category id= " + id));

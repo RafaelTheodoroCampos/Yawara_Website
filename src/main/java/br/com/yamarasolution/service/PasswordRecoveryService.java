@@ -32,7 +32,7 @@ public class PasswordRecoveryService {
    */
   public void sendRecoveryEmail(String email) {
 
-    if (repository.existsByEmail(email)) {
+    if (repository.existsByEmailIgnoreCase(email)) {
       String token = jwtUtils.generateTokenRecovery(email);
       String recoveryLink = "http://localhost:8080/password-recovery/reset?token=" + token;
       mailConfig.sendEmail(email, "Password Recovery", recoveryLink);
