@@ -348,7 +348,7 @@ public class UserController {
    * @return ResponseEntity.unprocessableEntity()
    */
   @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-  @DeleteMapping("/deleteAdmin")
+  @DeleteMapping("/delete")
   @SecurityRequirement(name = "token")
   @Operation(summary = "Delete logical user", description = "Delete user", responses = {
       @ApiResponse(responseCode = "200", description = "Successfully delete user!"),
