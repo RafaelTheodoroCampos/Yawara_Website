@@ -1,0 +1,1 @@
+ALTER TABLE email_change_request ADD COLUMN confirmation_code varchar(255);

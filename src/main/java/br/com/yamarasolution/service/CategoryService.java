@@ -42,7 +42,7 @@ public class CategoryService {
   public CategoryResponseDTO findCategoryById(UUID id) {
     return categoryRepository.findById(id)
         .map(CategoryResponseDTO::new)
-        .orElseThrow(() -> new CategoryException("Could not find category " + id));
+        .orElseThrow(() -> new CategoryException("Could not find category id= " + id));
   }
 
   /**
@@ -56,7 +56,7 @@ public class CategoryService {
   public List<CategoryResponseDTO> findCategoryByName(String name) {
     List<Category> categories = categoryRepository.findByNameEqualsIgnoreCase(name);
     if (categories.isEmpty()) {
-      throw new CategoryException("Could not find category " + name);
+      throw new CategoryException("Could not find category name= " + name);
     }
     return categories.stream().map(CategoryResponseDTO::new).collect(Collectors.toList());
   }
@@ -75,8 +75,8 @@ public class CategoryService {
   public CategoryResponseDTO insertCategory(CategoryRequestDTO categoryRequest) {
 
     String name = categoryRequest.getName();
-    if (categoryRepository.existsByName(name)) {
-      throw new CategoryException("Name already exists for category " + name);
+    if (categoryRepository.existsByNameIgnoreCase(name)) {
+      throw new CategoryException("Name already exists for category name= " + name);
     }
 
     Category category = new Category();
@@ -99,11 +99,11 @@ public class CategoryService {
   public CategoryResponseDTO updateCategory(UUID id, CategoryRequestDTO categoryRequest) {
 
     Category category = categoryRepository.findById(id)
-        .orElseThrow(() -> new CategoryException("Could not find category " + id));
+        .orElseThrow(() -> new CategoryException("Could not find category id= " + id));
 
     String name = categoryRequest.getName();
-    if (!category.getName().equalsIgnoreCase(name) && categoryRepository.existsByName(name)) {
-      throw new CategoryException("Name already exists for category " + name);
+    if (!category.getName().equalsIgnoreCase(name) && categoryRepository.existsByNameIgnoreCase(name)) {
+      throw new CategoryException("Name already exists for category name= " + name);
     }
 
     category.setName(name);
@@ -119,11 +119,26 @@ public class CategoryService {
    * 
    * @param id The id of the category to delete
    */
+  @Transactional
   public void deleteCategory(UUID id) {
-    categoryRepository.findById(id)
-        .orElseThrow(() -> new CategoryException("Could not find category " + id));
+    Category category = categoryRepository.findById(id)
+        .orElseThrow(() -> new CategoryException("Could not find category id= " + id));
+
+    if (hasProducts(category)) {
+      throw new CategoryException("Category has products, cannot be deleted");
+    }
 
     categoryRepository.deleteById(id);
+  }
+
+  /**
+   * If the category has products, return true, otherwise return false.
+   * 
+   * @param category The category to check
+   * @return A boolean value.
+   */
+  private boolean hasProducts(Category category) {
+    return category.getProducts().size() > 0;
   }
 
 }

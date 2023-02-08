@@ -51,6 +51,9 @@ public class User {
   @Column(name = "isactive")
   private Boolean isActive;
 
+  @Column(name = "telefone")
+  private String telefone;
+
   @Column(name = "last_login")
   private Instant lastLogin;
 
@@ -71,7 +74,7 @@ public class User {
   }
 
   public User(String username, String email, String password, Boolean isActive, Instant lastLogin, Instant createdAt,
-      Instant updatedAt, String imageUrl) {
+      Instant updatedAt, String imageUrl, String telefone) {
     this.username = username;
     this.email = email;
     this.password = password;
@@ -80,6 +83,7 @@ public class User {
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
     this.imageUrl = imageUrl;
+    this.telefone = telefone;
   }
 
 }

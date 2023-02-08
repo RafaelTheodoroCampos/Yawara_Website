@@ -34,7 +34,6 @@ public class ProductCategoryResponseDTO {
   
   private String imageUrl;
   
-  private UserCategoryResponseDTO createdBy;
   
 
   public ProductCategoryResponseDTO(Product p) {
@@ -48,7 +47,6 @@ public class ProductCategoryResponseDTO {
     this.createdAt = p.getCreatedAt();
     this.updatedAt = p.getUpdatedAt();
     this.imageUrl = p.getImageUrl();
-    this.createdBy = new UserCategoryResponseDTO(p.getCreatedBy());
   }
   
 }

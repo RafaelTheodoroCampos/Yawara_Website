@@ -1,6 +1,5 @@
 package br.com.yamarasolution.config;
 
-
 import java.io.IOException;
 
 import org.springdoc.core.models.GroupedOpenApi;
@@ -26,87 +25,96 @@ import io.swagger.v3.oas.models.responses.ApiResponse;
 @SecurityScheme(name = "token", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "bearer")
 public class OpenApiConfig {
 
-    @Bean
-    public OpenAPI baseOpenAPI() throws IOException {
+	@Bean
+	public OpenAPI baseOpenAPI() throws IOException {
 
-        ReadJsonFileToJsonObject readJsonFileToJsonObject = new ReadJsonFileToJsonObject();
+		ReadJsonFileToJsonObject readJsonFileToJsonObject = new ReadJsonFileToJsonObject();
 
-        ApiResponse badRequestAPI = new ApiResponse().content(
-                new Content().addMediaType(MediaType.APPLICATION_JSON_VALUE,
-                        new io.swagger.v3.oas.models.media.MediaType().addExamples("default",
-                                new Example()
-                                        .value(readJsonFileToJsonObject.read().get("badRequestResponse").toString()))))
-                .description("Bad Request!");
+		ApiResponse badRequestAPI = new ApiResponse().content(
+				new Content().addMediaType(MediaType.APPLICATION_JSON_VALUE,
+						new io.swagger.v3.oas.models.media.MediaType().addExamples("default",
+								new Example()
+										.value(readJsonFileToJsonObject.read().get("badRequestResponse").toString()))))
+				.description("Bad Request!");
 
-        ApiResponse badCredentialsAPI = new ApiResponse().content(
-                new Content().addMediaType(MediaType.APPLICATION_JSON_VALUE,
-                        new io.swagger.v3.oas.models.media.MediaType().addExamples("default",
-                                new Example().value(
-                                        readJsonFileToJsonObject.read().get("badCredentialsResponse").toString()))))
-                .description("Bad Credentials!");
+		ApiResponse badCredentialsAPI = new ApiResponse().content(
+				new Content().addMediaType(MediaType.APPLICATION_JSON_VALUE,
+						new io.swagger.v3.oas.models.media.MediaType().addExamples("default",
+								new Example().value(
+										readJsonFileToJsonObject.read().get("badCredentialsResponse").toString()))))
+				.description("Bad Credentials!");
 
-        ApiResponse forbiddenAPI = new ApiResponse().content(
-                new Content().addMediaType(MediaType.APPLICATION_JSON_VALUE,
-                        new io.swagger.v3.oas.models.media.MediaType().addExamples("default",
-                                new Example()
-                                        .value(readJsonFileToJsonObject.read().get("forbiddenResponse").toString()))))
-                .description("Forbidden!");
+		ApiResponse forbiddenAPI = new ApiResponse().content(
+				new Content().addMediaType(MediaType.APPLICATION_JSON_VALUE,
+						new io.swagger.v3.oas.models.media.MediaType().addExamples("default",
+								new Example()
+										.value(readJsonFileToJsonObject.read().get("forbiddenResponse").toString()))))
+				.description("Forbidden!");
 
-        ApiResponse unprocessableEntityAPI = new ApiResponse().content(
-                new Content().addMediaType(MediaType.APPLICATION_JSON_VALUE,
-                        new io.swagger.v3.oas.models.media.MediaType().addExamples("default",
-                                new Example()
-                                        .value(readJsonFileToJsonObject.read().get("unprocessableEntityResponse").toString()))))
-                .description("unprocessableEntity!");
+		ApiResponse unprocessableEntityAPI = new ApiResponse().content(
+				new Content().addMediaType(MediaType.APPLICATION_JSON_VALUE,
+						new io.swagger.v3.oas.models.media.MediaType().addExamples("default",
+								new Example()
+										.value(readJsonFileToJsonObject.read().get("unprocessableEntityResponse").toString()))))
+				.description("unprocessableEntity!");
 
-        ApiResponse internalServerErrorAPI = new ApiResponse().content(
-                new Content().addMediaType(MediaType.APPLICATION_JSON_VALUE,
-                        new io.swagger.v3.oas.models.media.MediaType().addExamples("default",
-                                new Example()
-                                        .value(readJsonFileToJsonObject.read().get("internalServerError").toString()))))
-                .description("Internal Server Error!");
+		ApiResponse internalServerErrorAPI = new ApiResponse().content(
+				new Content().addMediaType(MediaType.APPLICATION_JSON_VALUE,
+						new io.swagger.v3.oas.models.media.MediaType().addExamples("default",
+								new Example()
+										.value(readJsonFileToJsonObject.read().get("internalServerError").toString()))))
+				.description("Internal Server Error!");
 
-        Components components = new Components();
-        components.addResponses("BadRequest", badRequestAPI);
-        components.addResponses("badcredentials", badCredentialsAPI);
-        components.addResponses("forbidden", forbiddenAPI);
-        components.addResponses("unprocessableEntity", unprocessableEntityAPI);
-        components.addResponses("internalServerError", internalServerErrorAPI);
+		Components components = new Components();
+		components.addResponses("BadRequest", badRequestAPI);
+		components.addResponses("badcredentials", badCredentialsAPI);
+		components.addResponses("forbidden", forbiddenAPI);
+		components.addResponses("unprocessableEntity", unprocessableEntityAPI);
+		components.addResponses("internalServerError", internalServerErrorAPI);
 
-        return new OpenAPI()
-                .components(components)
-                .info(new Info().title("VzStore API")
-                        .version("V0.0.1")
-                        .description("API para a loja VzStore")
-                        .contact(new Contact().name("Suporte VzStore").email("support@vzstore.com"))
-                        .termsOfService("http://vzstore.com/terms")
-                        .license(new License().name("Apache 2.0").url("https://www.apache.org/licenses/LICENSE-2.0.html")));
-    }
+		return new OpenAPI()
+				.components(components)
+				.info(new Info().title("Yamara Solution API")
+						.version("V0.0.1")
+						.description("API para a loja Yamara Solution")
+						.contact(new Contact().name("Suporte Yamara Solution").email("support@YamaraSolution.com"))
+						.termsOfService("http://YamaraSolution.com/terms")
+						.license(new License().name("Apache 2.0").url("https://www.apache.org/licenses/LICENSE-2.0.html")));
+	}
 
-    @Bean
-    public GroupedOpenApi authenticationApi() {
-        String[] paths = { "/api/auth/**" };
-        return GroupedOpenApi.builder()
-                .group("Authentication")
-                .pathsToMatch(paths)
-                .build();
-    }
+	@Bean
+	public GroupedOpenApi authenticationApi() {
+		String[] paths = { "/api/auth/**" };
+		return GroupedOpenApi.builder()
+				.group("Authentication")
+				.pathsToMatch(paths)
+				.build();
+	}
 
-    @Bean
-    public GroupedOpenApi RecoveryApi() {
-        String[] paths = { "/api/password-recovery/**" };
-        return GroupedOpenApi.builder()
-                .group("Password Recovery")
-                .pathsToMatch(paths)
-                .build();
-    }
+	@Bean
+	public GroupedOpenApi RecoveryApi() {
+		String[] paths = { "/api/password-recovery/**" };
+		return GroupedOpenApi.builder()
+				.group("Password Recovery")
+				.pathsToMatch(paths)
+				.build();
+	}
 
-    @Bean
-    public GroupedOpenApi CategoryApi() {
-        String[] paths = { "/api/category/**" };
-        return GroupedOpenApi.builder()
-                .group("Categories")
-                .pathsToMatch(paths)
-                .build();
-    }
+	@Bean
+	public GroupedOpenApi CategoryApi() {
+		String[] paths = { "/api/category/**" };
+		return GroupedOpenApi.builder()
+				.group("Categories")
+				.pathsToMatch(paths)
+				.build();
+	}
+
+	@Bean
+	public GroupedOpenApi UserApi() {
+		String[] paths = { "/api/users/**" };
+		return GroupedOpenApi.builder()
+				.group("Users")
+				.pathsToMatch(paths)
+				.build();
+	}
 }

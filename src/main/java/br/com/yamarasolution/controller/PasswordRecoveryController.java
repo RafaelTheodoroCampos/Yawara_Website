@@ -38,7 +38,7 @@ public class PasswordRecoveryController {
    * @return A ResponseEntity with a 200 status code and a message.
    */
   @PostMapping("/send-email")
-  @Operation(description = "Password Recovery", responses = {
+  @Operation(summary = "Send email recovery", description = "Password Recovery", responses = {
       @ApiResponse(responseCode = "200", description = "If an account exists the email has been sent"),
       @ApiResponse(responseCode = "400", ref = "BadRequest"),
       @ApiResponse(responseCode = "500", ref = "internalServerError")
@@ -57,7 +57,7 @@ public class PasswordRecoveryController {
    * @return A ResponseEntity object.
    */
   @PostMapping("/reset")
-  @Operation(description = "Password Recovery", responses = {
+  @Operation(summary = "Password Recovery", description = "Password Recovery", responses = {
       @ApiResponse(responseCode = "200", description = "Password reset"),
       @ApiResponse(responseCode = "400", ref = "BadRequest"),
       @ApiResponse(responseCode = "422", ref = "unprocessableEntity"),

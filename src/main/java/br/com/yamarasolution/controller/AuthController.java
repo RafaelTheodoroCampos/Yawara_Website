@@ -49,7 +49,7 @@ public class AuthController {
    *         signupResponse.getAccessToken()).body(signupResponse);
    */
   @PostMapping("/signin")
-  @Operation(description = "Sign In Service", responses = {
+  @Operation(summary = "Sign In Service", description = "Sign In Service", responses = {
       @ApiResponse(responseCode = "200", description = "Successfully Singned In!", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SignupResponse.class))),
       @ApiResponse(responseCode = "400", ref = "BadRequest"),
       @ApiResponse(responseCode = "401", ref = "badcredentials"),
@@ -71,7 +71,7 @@ public class AuthController {
    * @param signUpRequest This is the request body that is sent to the server.
    */
   @PostMapping("/signup")
-  @Operation(description = "register In Service", responses = {
+  @Operation(summary = "Register In Service", description = "register In Service", responses = {
       @ApiResponse(responseCode = "201", description = "Successfully Register In!", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SignupRegisterResponse.class))),
       @ApiResponse(responseCode = "400", ref = "BadRequest"),
       @ApiResponse(responseCode = "401", ref = "badcredentials"),
@@ -97,7 +97,7 @@ public class AuthController {
   @PreAuthorize("hasRole('ADMIN')")
   @PutMapping("/new-roles/{idUsuario}")
   @SecurityRequirement(name = "token")
-  @Operation(description = "add news Roles", responses = {
+  @Operation(summary = "Add news Roles", description = "add news Roles, Admin Only", responses = {
       @ApiResponse(responseCode = "201", description = "Roles Register In!", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SignupRegisterResponse.class))),
       @ApiResponse(responseCode = "400", ref = "BadRequest"),
       @ApiResponse(responseCode = "401", ref = "badcredentials"),
@@ -124,7 +124,7 @@ public class AuthController {
   @PreAuthorize("hasRole('ADMIN')")
   @PutMapping("/delete-roles/{idUsuario}")
   @SecurityRequirement(name = "token")
-  @Operation(description = "add news Roles", responses = {
+  @Operation(summary = "Remove news Roles", description = "Remove news Roles, Admin only", responses = {
       @ApiResponse(responseCode = "201", description = "Roles Register In!", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SignupRegisterResponse.class))),
       @ApiResponse(responseCode = "400", ref = "BadRequest"),
       @ApiResponse(responseCode = "401", ref = "badcredentials"),
@@ -150,7 +150,7 @@ public class AuthController {
    * @return ResponseEntity.badRequest().body(e.getMessage());
    */
   @PutMapping("/confirm-account")
-  @Operation(description = "register In Service", responses = {
+  @Operation(summary = "Confirm Account", description = "Confirm Account", responses = {
       @ApiResponse(responseCode = "201", description = "Account activated successfully!"),
       @ApiResponse(responseCode = "400", ref = "BadRequest"),
       @ApiResponse(responseCode = "401", ref = "badcredentials"),
@@ -175,7 +175,7 @@ public class AuthController {
    * @return ResponseEntity.status(HttpStatus.CREATED).body(response);
    */
   @PostMapping("/refreshtoken")
-  @Operation(description = "Refresh Token", responses = {
+  @Operation(summary = "Refresh Token", description = "Refresh Token", responses = {
       @ApiResponse(responseCode = "200", description = "Successfully Refresh Token!", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RefreshTokenRequest.class))),
       @ApiResponse(responseCode = "400", ref = "BadRequest"),
       @ApiResponse(responseCode = "401", ref = "badcredentials"),
@@ -197,7 +197,8 @@ public class AuthController {
    * @return A ResponseEntity with a String body.
    */
   @PostMapping("/signout")
-  @Operation(security = @SecurityRequirement(name = "token"), description = "Signout In Service", responses = {
+  @SecurityRequirement(name = "token")
+  @Operation(summary = "Signout In Service", description = "Signout In Service", responses = {
       @ApiResponse(responseCode = "200", description = "Log out successful!", content = @Content(mediaType = "application/json")),
       @ApiResponse(responseCode = "400", ref = "BadRequest"),
       @ApiResponse(responseCode = "401", ref = "badcredentials"),

@@ -74,6 +74,7 @@ public class SecurityConfig {
         .requestMatchers(HttpMethod.POST, "/api/auth/signup").permitAll()
         .requestMatchers(HttpMethod.POST, "/api/auth/refreshtoken").permitAll()
         .requestMatchers(HttpMethod.POST, "/api/password-recovery/**").permitAll()
+        .requestMatchers(HttpMethod.PUT, "/api/users/update/email/confirm").permitAll()
         .requestMatchers(HttpMethod.PUT, "/api/auth/confirm-account").permitAll()
         .requestMatchers(HttpMethod.GET, "/api/category").permitAll()
         .requestMatchers(HttpMethod.GET, "/api/category/{id}").permitAll()

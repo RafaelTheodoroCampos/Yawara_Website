@@ -1,4 +1,4 @@
-package br.com.yamarasolution.DTO.category;
+package br.com.yamarasolution.DTO.users;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -10,10 +10,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
 @Getter
 @Setter
-public class UserCategoryResponseDTO {
+@NoArgsConstructor
+public class UserResponseDTO {
+
 
   private UUID id;
 
@@ -21,14 +22,17 @@ public class UserCategoryResponseDTO {
 
   private String email;
 
+  private Boolean isActive;
+
   private String imageUrl;
 
   private Set<Role> roles = new HashSet<>();
 
-  public UserCategoryResponseDTO(User u) {
+  public UserResponseDTO(User u) {
     this.id = u.getId();
     this.username = u.getUsername();
     this.email = u.getEmail();
+    this.isActive = u.getIsActive();
     this.imageUrl = u.getImageUrl();
     this.roles = u.getRoles();
   }
