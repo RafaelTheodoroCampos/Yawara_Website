@@ -8,11 +8,11 @@
 		<version>3.0.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>br.com.yamarasolution</groupId>
-	<artifactId>yamarasolution</artifactId>
+	<groupId>br.com.yawarasolution</groupId>
+	<artifactId>yawarasolution</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>yamarasolution</name>
-	<description>e-commerce yamarasolution</description>
+	<name>yawarasolution</name>
+	<description>e-commerce yawarasolution</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
