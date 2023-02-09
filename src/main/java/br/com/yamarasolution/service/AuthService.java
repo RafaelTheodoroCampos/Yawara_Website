@@ -25,7 +25,7 @@ import br.com.yamarasolution.DTO.auth.SignupResponse;
 import br.com.yamarasolution.DTO.auth.TokenRefreshResponse;
 import br.com.yamarasolution.config.MailConfig;
 import br.com.yamarasolution.enums.ERole;
-import br.com.yamarasolution.exception.AccountExcpetion;
+import br.com.yamarasolution.exception.AccountException;
 import br.com.yamarasolution.exception.TokenRefreshException;
 import br.com.yamarasolution.exception.UserException;
 import br.com.yamarasolution.model.RefreshToken;
@@ -73,7 +73,7 @@ public class AuthService {
   public void lastLogin(UUID id) {
     Optional<User> user = userRepository.findById(id);
     if (!user.isPresent()) {
-      throw new AccountExcpetion("User not found");
+      throw new AccountException("User not found");
     }
     user.get().setLastLogin(Instant.now());
     userRepository.save(user.get());
@@ -123,11 +123,11 @@ public class AuthService {
   @Transactional
   public SignupRegisterResponse registerUser(SignupRequest signUpRequest) {
     if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-      throw new AccountExcpetion("Error: Username is already taken!");
+      throw new AccountException("Error: Username is already taken!");
     }
 
     if (userRepository.existsByEmailIgnoreCase(signUpRequest.getEmail())) {
-      throw new AccountExcpetion("Error: Email is already in use!");
+      throw new AccountException("Error: Email is already in use!");
     }
 
     emailChangeRequestRepository.findByNewEmailIgnoreCaseAndConfirmedFalse(signUpRequest.getEmail())
@@ -177,7 +177,7 @@ public class AuthService {
     Optional<User> user = userRepository.findById(idUsuario);
 
     if (!user.isPresent()) {
-      throw new AccountExcpetion("Error: User notFound");
+      throw new AccountException("Error: User notFound");
     }
 
     Set<String> strRoles = rolesIn.getRoles();
@@ -193,7 +193,7 @@ public class AuthService {
           eRole = ERole.ROLE_USER;
       }
       Role foundRole = roleRepository.findByName(eRole)
-          .orElseThrow(() -> new AccountExcpetion("Error: Role is not found."));
+          .orElseThrow(() -> new AccountException("Error: Role is not found."));
       roles.add(foundRole);
     }
 
@@ -219,7 +219,7 @@ public class AuthService {
     Optional<User> user = userRepository.findById(idUsuario);
 
     if (!user.isPresent()) {
-      throw new AccountExcpetion("Error: User notFound");
+      throw new AccountException("Error: User notFound");
     }
 
     Set<String> strRoles = rolesIn.getRoles();
@@ -242,7 +242,7 @@ public class AuthService {
     Set<Role> currentRoles = user.get().getRoles();
     for (Role role : roles) {
       if (role.getName().equals(ERole.ROLE_USER) && !currentRoles.contains(role)) {
-        throw new AccountExcpetion("Error: ROLE_USER cannot be removed");
+        throw new AccountException("Error: ROLE_USER cannot be removed");
       }
     }
 
@@ -267,10 +267,10 @@ public class AuthService {
   @Transactional
   public String confirmAccount(String code) {
     User user = userRepository.findByActivationCode(code)
-        .orElseThrow(() -> new AccountExcpetion("User activationCode " + code + " is not a valid activation code"));
+        .orElseThrow(() -> new AccountException("User activationCode " + code + " is not a valid activation code"));
 
     if (user == null) {
-      throw new AccountExcpetion("Error: Invalid activation code.");
+      throw new AccountException("Error: Invalid activation code.");
     }
 
     user.setIsActive(true);

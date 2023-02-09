@@ -1,6 +1,5 @@
 package br.com.yamarasolution.model;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -33,16 +32,16 @@ public class Product {
   private String description;
   
   @Column(name = "rating", nullable = false)
-  private Double rating;
+  private Integer rating;
 
   @Column(name = "isactive", nullable = false)
   private Boolean isActive;
   
   @Column(name = "price", nullable = false)
-  private BigDecimal price;
+  private Double price;
   
   @Column(name = "stock", nullable = false)
-  private BigDecimal stock;
+  private Integer stock;
   
   @Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
   private Instant createdAt;

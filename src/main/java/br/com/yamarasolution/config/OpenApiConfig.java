@@ -117,4 +117,13 @@ public class OpenApiConfig {
 				.pathsToMatch(paths)
 				.build();
 	}
+
+	@Bean
+	public GroupedOpenApi ProductApi() {
+		String[] paths = { "/api/products/**" };
+		return GroupedOpenApi.builder()
+				.group("Products")
+				.pathsToMatch(paths)
+				.build();
+	}
 }

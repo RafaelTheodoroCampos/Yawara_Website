@@ -1,11 +1,11 @@
 package br.com.yamarasolution.exception;
 
-public class AccountExcpetion extends RuntimeException {
+public class ProductException extends RuntimeException {
 
   private static final long serialVersionUID = 1L;
 
-  public AccountExcpetion(String message) {
+  public ProductException(String message) {
     super(message);
   }
-  
+
 }
