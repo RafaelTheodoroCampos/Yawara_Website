@@ -1,7 +1,5 @@
 package br.com.yamarasolution.DTO.category;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import br.com.yamarasolution.model.Category;
@@ -12,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CategoryResponseDTO {
+public class CategoryResponseProductDTO {
 
   private UUID id;
 
@@ -20,16 +18,9 @@ public class CategoryResponseDTO {
 
   private String description;
 
-  private List<ProductCategoryResponseDTO> products = new ArrayList<>();
-
-  public CategoryResponseDTO(Category c) {
+  public CategoryResponseProductDTO(Category c) {
     this.id = c.getId();
     this.name = c.getName();
     this.description = c.getDescription();
-    if (c.getProducts() != null) {
-      c.getProducts().stream().filter(p -> p.getIsActive())
-          .forEach(product -> products.add(new ProductCategoryResponseDTO(product)));
-    }
   }
-
 }

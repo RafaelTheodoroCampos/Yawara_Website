@@ -46,8 +46,8 @@ public class CategoryController {
    * @return A list of CategoryResponseDTO objects.
    */
   @GetMapping
-  @Operation(description = "Get all Categories", responses = {
-      @ApiResponse(responseCode = "200", description = "Successfully get all!", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponseDTO.class))),
+  @Operation(summary = "Get all Categories", description = "Get all Categories", responses = {
+      @ApiResponse(responseCode = "200", description = "Successfully get all! Only active products will appear", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponseDTO.class))),
       @ApiResponse(responseCode = "400", ref = "BadRequest"),
       @ApiResponse(responseCode = "500", ref = "internalServerError")
   })
@@ -62,8 +62,8 @@ public class CategoryController {
    * @return A ResponseEntity object.
    */
   @GetMapping("{id}")
-  @Operation(description = "Get Categories by Id", responses = {
-      @ApiResponse(responseCode = "200", description = "Successfully get by id!", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponseDTO.class))),
+  @Operation(summary = "Get Categories by Id", description = "Get Categories by Id", responses = {
+      @ApiResponse(responseCode = "200", description = "Successfully get by id! Only active products will appear", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponseDTO.class))),
       @ApiResponse(responseCode = "400", ref = "BadRequest"),
       @ApiResponse(responseCode = "422", ref = "unprocessableEntity"),
       @ApiResponse(responseCode = "500", ref = "internalServerError")
@@ -84,8 +84,8 @@ public class CategoryController {
    * @return A ResponseEntity object.
    */
   @GetMapping("/name/{name}")
-  @Operation(description = "Get Categories by Name", responses = {
-      @ApiResponse(responseCode = "200", description = "Successfully get by Name!", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponseDTO.class))),
+  @Operation(summary = "Get Categories by Name", description = "Get Categories by Name", responses = {
+      @ApiResponse(responseCode = "200", description = "Successfully get by Name! Only active products will appear", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponseDTO.class))),
       @ApiResponse(responseCode = "400", ref = "BadRequest"),
       @ApiResponse(responseCode = "422", ref = "unprocessableEntity"),
       @ApiResponse(responseCode = "500", ref = "internalServerError")
@@ -108,7 +108,7 @@ public class CategoryController {
   @PreAuthorize("hasRole('ADMIN')")
   @PostMapping("/register")
   @SecurityRequirement(name = "token")
-  @Operation(description = "Create new Category", responses = {
+  @Operation(summary = "Create new Category", description = "Create new Category", responses = {
       @ApiResponse(responseCode = "201", description = "Successfully Register!", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponseDTO.class))),
       @ApiResponse(responseCode = "400", ref = "BadRequest"),
       @ApiResponse(responseCode = "401", ref = "badcredentials"),
@@ -139,7 +139,7 @@ public class CategoryController {
   @PreAuthorize("hasRole('ADMIN')")
   @PutMapping("/update/{id}")
   @SecurityRequirement(name = "token")
-  @Operation(description = "Update Category", responses = {
+  @Operation(summary = "Update Category", description = "Update Category", responses = {
       @ApiResponse(responseCode = "201", description = "Successfully Updated!", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponseDTO.class))),
       @ApiResponse(responseCode = "400", ref = "BadRequest"),
       @ApiResponse(responseCode = "401", ref = "badcredentials"),
@@ -170,7 +170,7 @@ public class CategoryController {
   @PreAuthorize("hasRole('ADMIN')")
   @DeleteMapping("/delete/{id}")
   @SecurityRequirement(name = "token")
-  @Operation(description = "Delete Category", responses = {
+  @Operation(summary = "Delete Category", description = "Delete Category", responses = {
       @ApiResponse(responseCode = "204", description = "Successfully Deleted!"),
       @ApiResponse(responseCode = "400", ref = "BadRequest"),
       @ApiResponse(responseCode = "401", ref = "badcredentials"),

@@ -301,7 +301,6 @@ public class UserController {
   public ResponseEntity<Object> updateUserImage(@RequestParam(name = "file") MultipartFile file) {
     try {
       long maxFileSize = 5000000; // 5 MB
-      System.out.println(file.getSize() + " dasdasdasdasd");
       if (file.getSize() > maxFileSize) {
         return ResponseEntity.unprocessableEntity()
             .body(new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, "File size exceeds the maximum allowed.",
@@ -350,7 +349,7 @@ public class UserController {
   @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
   @DeleteMapping("/delete")
   @SecurityRequirement(name = "token")
-  @Operation(summary = "Delete logical user", description = "Delete user", responses = {
+  @Operation(summary = "Delete logical logged user", description = "Delete user", responses = {
       @ApiResponse(responseCode = "200", description = "Successfully delete user!"),
       @ApiResponse(responseCode = "400", ref = "BadRequest"),
       @ApiResponse(responseCode = "401", ref = "badcredentials"),

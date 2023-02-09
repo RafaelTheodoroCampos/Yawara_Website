@@ -1,0 +1,1 @@
+ALTER TABLE product ALTER COLUMN rating TYPE integer USING rating::integer;

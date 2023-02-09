@@ -39,8 +39,8 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
    * @return A ResponseEntity object is being returned.
    */
   @ExceptionHandler({ DataIntegrityViolationException.class, MethodArgumentTypeMismatchException.class,
-      AccountExcpetion.class, CategoryException.class, UserException.class, FileSizeLimitExceededException.class,
-      SizeLimitExceededException.class })
+      AccountException.class, CategoryException.class, UserException.class, FileSizeLimitExceededException.class,
+      SizeLimitExceededException.class, ProductException.class })
   public ResponseEntity<ApiError> handleExceptions(RuntimeException ex) {
     log.error("Error: ", ex);
     return new ResponseEntity<>(
@@ -49,8 +49,10 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
   }
 
   /**
-   * If the file size exceeds the maximum allowed, return a response entity with a status of 422
-   * (Unprocessable Entity), a content type of application/json, and a body of the apiError object.
+   * If the file size exceeds the maximum allowed, return a response entity with a
+   * status of 422
+   * (Unprocessable Entity), a content type of application/json, and a body of the
+   * apiError object.
    * 
    * @param e The exception object
    * @return A ResponseEntity object.

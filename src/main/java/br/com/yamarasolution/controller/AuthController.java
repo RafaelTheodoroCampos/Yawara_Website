@@ -21,7 +21,7 @@ import br.com.yamarasolution.DTO.auth.SignupRegisterResponse;
 import br.com.yamarasolution.DTO.auth.SignupRequest;
 import br.com.yamarasolution.DTO.auth.SignupResponse;
 import br.com.yamarasolution.DTO.auth.TokenRefreshResponse;
-import br.com.yamarasolution.exception.AccountExcpetion;
+import br.com.yamarasolution.exception.AccountException;
 import br.com.yamarasolution.exception.ApiError;
 import br.com.yamarasolution.exception.TokenRefreshException;
 import br.com.yamarasolution.service.AuthService;
@@ -60,7 +60,7 @@ public class AuthController {
     try {
       SignupResponse signupResponse = authService.authenticateUser(loginRequest);
       return ResponseEntity.ok().header("Authorization", signupResponse.getAccessToken()).body(signupResponse);
-    } catch (AccountExcpetion e) {
+    } catch (AccountException e) {
       return ResponseEntity.unprocessableEntity().body(new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, "Unprocessable Entity", e.getLocalizedMessage()));
     }
   }
@@ -109,7 +109,7 @@ public class AuthController {
     try {
       SignupRegisterResponse response = authService.newRoles(rolesIn, idUsuario);
       return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    } catch (AccountExcpetion e) {
+    } catch (AccountException e) {
       return ResponseEntity.unprocessableEntity().body(new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, "Unprocessable Entity", e.getLocalizedMessage()));
     }
   }
@@ -136,7 +136,7 @@ public class AuthController {
     try {
       SignupRegisterResponse response = authService.removeRoles(rolesIn, idUsuario);
       return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    } catch (AccountExcpetion e) {
+    } catch (AccountException e) {
       return ResponseEntity.unprocessableEntity().body(new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, "Unprocessable Entity", e.getLocalizedMessage()));
     }
   }
@@ -161,7 +161,7 @@ public class AuthController {
     try {
       String response = authService.confirmAccount(code);
       return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    } catch (AccountExcpetion e) {
+    } catch (AccountException e) {
       return ResponseEntity.unprocessableEntity().body(new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, "Unprocessable Entity", e.getLocalizedMessage()));
     }
   }
