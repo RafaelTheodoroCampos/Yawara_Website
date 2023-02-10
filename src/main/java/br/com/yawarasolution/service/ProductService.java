@@ -60,16 +60,18 @@ public class ProductService {
    * @return A ProductResponseDTO object.
    */
   public ProductResponseDTO findProductsById(UUID id) {
-    return productRepository.findById(id)
+    return productRepository.findById(id).filter(p -> p.getIsActive())
         .map(ProductResponseDTO::new)
         .orElseThrow(() -> new ProductException("Could not find product, id= " + id));
   }
 
   /**
-   * Find all products that are active, and return a page of them, mapped to ProductResponseDTO objects.
+   * Find all products that are active, and return a page of them, mapped to
+   * ProductResponseDTO objects.
    * 
    * @param isActive Boolean
-   * @param pageable The pageable object is used to specify the page number, page size, and sort order.
+   * @param pageable The pageable object is used to specify the page number, page
+   *                 size, and sort order.
    * @return A Page of ProductResponseDTOs
    */
   public Page<ProductResponseDTO> findAllProductsPageable(Boolean isActive, Pageable pageable) {
@@ -141,4 +143,133 @@ public class ProductService {
     return new ProductResponseDTO(product);
   }
 
+  /**
+   * It updates a product in the database
+   * 
+   * @param id             The id of the product to be updated.
+   * @param productRequest This is the request body that is sent to the API.
+   * @return A ProductResponseDTO object.
+   */
+  @Transactional
+  public ProductResponseDTO updateProduct(UUID id, ProducRequestDTO productRequest) {
+
+    // Finding the product by id and throwing an exception if it is not found.
+    Product product = productRepository.findById(id)
+        .orElseThrow(() -> new ProductException("Could not find product, id= " + id));
+
+    // This is checking if the product name already exists in the database.
+    String name = productRequest.getName();
+    if (!product.getName().equalsIgnoreCase(name) && productRepository.existsByNameIgnoreCase(name)) {
+      throw new ProductException("Name already exists for category name= " + name);
+    }
+
+    // Finding the category by id and throwing an exception if it is not found.
+    Category category = categoryRepository.findById(productRequest.getCategory().getId())
+        .orElseThrow(
+            () -> new ProductException("Could not find category, id= " + productRequest.getCategory().getId()));
+
+    product.setCategory(category);
+    product.setCreatedAt(product.getCreatedAt());
+    product.setCreatedBy(product.getCreatedBy());
+    product.setDescription(productRequest.getDescription());
+    product.setImageUrl(product.getImageUrl());
+    product.setIsActive(true);
+    product.setName(name);
+    product.setPrice(productRequest.getPrice());
+    product.setRating(product.getRating());
+    product.setStock(productRequest.getStock());
+    product.setUpdatedAt(Instant.now());
+    product = productRepository.save(product);
+
+    return new ProductResponseDTO(product);
+
+  }
+
+  /**
+   * It finds a product by id, uploads a new image to firebase, deletes the old
+   * image from firebase, and
+   * updates the product with the new image url
+   * 
+   * @param id   The id of the product to be updated.
+   * @param file The file to be uploaded.
+   * @return The ProductResponseDTO is being returned.
+   */
+  @Transactional
+  public ProductResponseDTO updateProductImage(UUID id, MultipartFile file) throws IOException {
+
+    // Finding the product by id and throwing an exception if it is not found.
+    Product product = productRepository.findById(id)
+        .orElseThrow(() -> new ProductException("Could not find product, id= " + id));
+
+    // Uploading the image to firebase.
+    String urlfile = firebaseFileService.saveFile(file);
+    // Deleting the image from firebase.
+    firebaseFileService.deletFile(product.getImageUrl());
+
+    product.setImageUrl(
+        "https://firebasestorage.googleapis.com/v0/b/yamara-db-image.appspot.com/o/" + urlfile + "?alt=media");
+    product.setUpdatedAt(Instant.now());
+    product = productRepository.save(product);
+    return new ProductResponseDTO(product);
+  }
+
+  /**
+   * It finds the product by id, sets the updatedAt and isActive fields, and saves
+   * the product
+   * 
+   * @param id The id of the product to be deleted.
+   */
+  @Transactional
+  public void deleteLogicalProduct(UUID id) {
+    // Finding the product by id and throwing an exception if it is not found.
+    Product product = productRepository.findById(id)
+        .orElseThrow(() -> new ProductException("Could not find product, id= " + id));
+    product.setUpdatedAt(Instant.now());
+    product.setIsActive(false);
+    productRepository.save(product);
+  }
+
+  /**
+   * It deletes a product if it has no purchases
+   * 
+   * @param id The id of the product to be deleted.
+   */
+  @Transactional
+  public void deleteProduct(UUID id) {
+    // Finding the product by id and throwing an exception if it is not found.
+    Product product = productRepository.findById(id)
+        .orElseThrow(() -> new ProductException("Could not find product, id= " + id));
+
+    if (hasPurchases(product)) {
+      throw new ProductException("Product has purchases, cannot be deleted");
+    }
+
+    productRepository.deleteById(id);
+  }
+
+  /**
+   * If the product has no purchases, then it is not a valid product
+   * 
+   * @param product The product to check for purchases
+   * @return A boolean value.
+   */
+  private boolean hasPurchases(Product product) {
+    return product.getPurchases().size() > 0;
+  }
+
+  /**
+   * It finds the product by id, sets the updatedAt and isActive fields, and saves
+   * the product
+   * 
+   * @param id The id of the product to be reactivated.
+   */
+  @Transactional
+  public void reactiveProduct(UUID id) {
+    // Finding the product by id and throwing an exception if it is not found.
+    Product product = productRepository.findById(id)
+        .orElseThrow(() -> new ProductException("Could not find product, id= " + id));
+    product.setUpdatedAt(Instant.now());
+    product.setIsActive(true);
+    productRepository.save(product);
+  }
 }
