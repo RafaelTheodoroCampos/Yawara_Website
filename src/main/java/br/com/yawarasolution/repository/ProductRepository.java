@@ -15,6 +15,10 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 
   Page<Product> findByNameContainingIgnoreCaseAndIsActive(String nome, Boolean isActive, Pageable pageable);
 
+  Page<Product> findByNameContainingIgnoreCaseAndCategory_NameIgnoreCaseAndIsActive(String name, String categoryName, boolean isActive, Pageable pageable);
+
+  Page<Product> findByCategory_NameIgnoreCaseAndIsActive(String categoryName, boolean isActive, Pageable pageable);
+  
   Page<Product> findByIsActive(Boolean isActive, Pageable pageable);
 
   Optional<Product> findProductByNameIgnoreCase(String name);
