@@ -2,6 +2,8 @@ package br.com.yawarasolution.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import br.com.yawarasolution.DTO.userpurchase.PurchaseRequestUserPurchaseDTO;
 import br.com.yawarasolution.DTO.userpurchase.UserPurchaseRequestDTO;
 import br.com.yawarasolution.DTO.userpurchase.UserPurchaseResponseDTO;
+import br.com.yawarasolution.config.MailConfig;
 import br.com.yawarasolution.enums.PurchaseStatus;
 import br.com.yawarasolution.exception.UserPurchaseException;
 import br.com.yawarasolution.model.Product;
@@ -43,8 +46,8 @@ public class UserPurchaseService {
   @Autowired
   private ProductRepository productRepository;
 
-  // @Autowired
-  // private MailConfig mailConfig;
+  @Autowired
+  private MailConfig mailConfig;
 
   /**
    * It takes all the user purchases from the database, converts them to
@@ -195,6 +198,16 @@ public class UserPurchaseService {
       purchase.setUserPurchase(userPurchase);
       purchaseRepository.save(purchase);
     }
+
+    // Send email notification
+    List<String> productNames = purchases.stream().map(p -> p.getProduct().getName()).collect(Collectors.toList());
+    String productList = String.join(", ", productNames);
+    String confirmationMessage = "Sua compra foi concluída com sucesso. Produtos comprados: " + productList
+        + ". Status: " + userPurchase.getPurchaseStatus().getMensagem() + ". Valor total: " + userPurchase.getTotalPrice()
+        + ".";
+
+    mailConfig.sendEmail(user.getEmail(), "Thank you for your purchase", confirmationMessage);
+
     return new UserPurchaseResponseDTO(userPurchase, purchases);
   }
 
@@ -236,6 +249,54 @@ public class UserPurchaseService {
     purchase.setUnitPrice(new BigDecimal(product.getPrice()));
     purchase.setQuantity(purchaseProduct.getQuantity());
     return purchase;
+  }
+
+  /**
+   * It updates the status of a purchase order
+   * 
+   * @param id            UUID
+   * @param statusRequest CANCELED
+   * @return The method returns a UserPurchaseResponseDTO object.
+   */
+  @Transactional
+  public UserPurchaseResponseDTO updateOrderStatus(UUID id, PurchaseStatus statusRequest) {
+    UserPurchase userPurchase = userPurchaseRepository.findById(id)
+        .orElseThrow(() -> new UserPurchaseException("Could not find Order, id: " + id));
+
+    if (userPurchase.getPurchaseStatus() == PurchaseStatus.CANCELED) {
+      throw new UserPurchaseException("Purchase already canceled, impossible to change the status");
+    }
+
+    if (statusRequest == PurchaseStatus.CANCELED && userPurchase.getPurchaseStatus() != PurchaseStatus.CANCELED) {
+      returnProductStock(userPurchase.getPurchases());
+    }
+
+    userPurchase.setPurchaseStatus(statusRequest);
+    userPurchase = userPurchaseRepository.save(userPurchase);
+
+    // Email notification
+    String pattern = "dd/MM/yyyy HH:mm:ss";
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+    String mensagem = String.format("Status do pedido atualizado para '%s' às %s",
+        statusRequest.getMensagem(), LocalDateTime.now().format(formatter));
+    mailConfig.sendEmail(userPurchase.getUser().getEmail(), "Update on your purchase", mensagem);
+
+    return new UserPurchaseResponseDTO(userPurchase);
+  }
+
+  /**
+   * It returns the stock of the products purchased by the user
+   * 
+   * @param purchases List of purchases to be returned
+   */
+  @Transactional
+  private void returnProductStock(List<Purchase> purchases) {
+    for (Purchase purchase : purchases) {
+      Product product = productRepository.findById(purchase.getProduct().getId())
+          .orElseThrow(() -> new UserPurchaseException("Product not found, id: " + purchase.getProduct().getId()));
+      product.setStock(new BigDecimal(product.getStock()).add(purchase.getQuantity()).intValueExact());
+      productRepository.save(product);
+    }
   }
 
 }

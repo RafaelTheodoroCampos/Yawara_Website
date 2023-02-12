@@ -184,8 +184,8 @@ public class UserController {
       @ApiResponse(responseCode = "422", ref = "unprocessableEntity"),
       @ApiResponse(responseCode = "500", ref = "internalServerError")
   })
-  public ResponseEntity<Object> updateUserAdmin(@Valid @PathVariable UUID id,
-      @RequestBody UserRequestAdminDTO userRequest) {
+  public ResponseEntity<Object> updateUserAdmin(@PathVariable UUID id,
+  @Valid @RequestBody UserRequestAdminDTO userRequest) {
     try {
       UserResponseDTO response = userService.updateUserAdmin(id, userRequest);
       URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")

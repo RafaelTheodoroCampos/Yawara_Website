@@ -3,7 +3,6 @@ package br.com.yawarasolution.DTO.userpurchase;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-import br.com.yawarasolution.DTO.product.ProductResponseDTO;
 import br.com.yawarasolution.model.Purchase;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,12 +19,12 @@ public class PurchaseResponseUserPurchaseDTO {
 
   private BigDecimal unitPrice;
 
-  private ProductResponseDTO product;
+  private ProductResponseUserPurchaseDTO product;
 
   public PurchaseResponseUserPurchaseDTO(Purchase p) {
     this.id = p.getId();
     this.quantity = p.getQuantity();
     this.unitPrice = p.getUnitPrice();
-    this.product = new ProductResponseDTO(p.getProduct());
+    this.product = new ProductResponseUserPurchaseDTO(p.getProduct());
   }
 }

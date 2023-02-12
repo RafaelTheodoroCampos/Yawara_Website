@@ -6,18 +6,29 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum PurchaseStatus {
-  PENDING("1"),
-  APPROVED("2"),
-  REJECTED("3");
+  PENDING("1", "Pendente de pagamento"),
+  APPROVED("2", "Pagamento aprovado"),
+  DECLINED("3", "Pagamento recusado"),
+  REFUNDED("4", "Pagamento estornado"),
+  PROCESSING("5", "Processando"),
+  SHIPPED("6", "Enviado"),
+  DELIVERED("7", "Entregue"),
+  CANCELED("8", "Cancelado");
 
   private String codigo;
+  private String mensagem;
 
-  PurchaseStatus(String codigo) {
+  PurchaseStatus(String codigo, String mensagem) {
     this.codigo = codigo;
+    this.mensagem = mensagem;
   }
 
   public String getCodigo() {
     return codigo;
+  }
+
+  public String getMensagem() {
+    return mensagem;
   }
 
   public static PurchaseStatus fromCodigo(String codigo) {

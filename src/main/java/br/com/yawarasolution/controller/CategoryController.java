@@ -147,8 +147,8 @@ public class CategoryController {
       @ApiResponse(responseCode = "422", ref = "unprocessableEntity"),
       @ApiResponse(responseCode = "500", ref = "internalServerError")
   })
-  public ResponseEntity<Object> update(@Valid @PathVariable UUID id,
-      @RequestBody CategoryRequestDTO categoryRequest) {
+  public ResponseEntity<Object> update(@PathVariable UUID id,
+      @Valid @RequestBody CategoryRequestDTO categoryRequest) {
     try {
       CategoryResponseDTO response = categoryService.updateCategory(id, categoryRequest);
       URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
