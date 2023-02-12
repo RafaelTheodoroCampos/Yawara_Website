@@ -113,9 +113,7 @@ CREATE TABLE
         user_id UUID,
         total_price decimal(10, 2) NOT NULL,
         purchase_status varchar(20) NOT NULL,
-        purchase_date timestamp
-        with
-            time zone NOT NULL,
+        purchase_date date,
             PRIMARY KEY (id),
             FOREIGN KEY (user_id) REFERENCES users(id)
     );
