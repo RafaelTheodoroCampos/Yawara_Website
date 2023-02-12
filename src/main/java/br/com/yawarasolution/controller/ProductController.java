@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -65,31 +64,47 @@ public class ProductController {
   }
 
   /**
-   * It returns a list of products that match the search criteria
+   * It searches for products by name, category and isActive, and returns a
+   * pageable response
    * 
-   * @param name     String
-   * @param isActive true or false
-   * @param p        Pageable
-   * @return A Page of ProductResponseDTO
+   * @param name         The name of the product to search for
+   * @param categoryName Category to which the product belongs
+   * @param isActive     Indicates whether the product is active or not
+   * @param p            Pageable
+   * @return A list of products
    */
   @GetMapping("/search")
   @Operation(summary = "Search products peable", description = "Get all Products peable", responses = {
       @ApiResponse(responseCode = "200", description = "Successfully get all!"),
       @ApiResponse(responseCode = "400", ref = "BadRequest"),
+      @ApiResponse(responseCode = "422", ref = "unprocessableEntity"),
       @ApiResponse(responseCode = "500", ref = "internalServerError")
   }, parameters = {
-      @Parameter(name = "name", description = "The name of the product to search for", example = "Rtx-3090"),
+      @Parameter(name = "name", description = "The name of the product to search for", example = "Calabresa"),
+      @Parameter(name = "categoryName", description = "Category to which the product belongs", example = "Pizzas"),
       @Parameter(name = "isActive", description = "Indicates whether the product is active or not", example = "true"),
       @Parameter(name = "page", description = "The page number", example = "0"),
       @Parameter(name = "size", description = "The page size", example = "10"),
   })
-  public ResponseEntity<Page<ProductResponseDTO>> searchProducts(@RequestParam(required = false) String name,
+  public ResponseEntity<Object> searchProductsAndCategory(@RequestParam(required = false) String name,
+      @RequestParam(required = false) String categoryName,
       @RequestParam(required = true) Boolean isActive,
       @PageableDefault(page = 0, size = 10) @Parameter(hidden = true) Pageable p) {
-    if (name == null) {
-      return ResponseEntity.ok(productService.findAllProductsPageable(isActive, p));
+    try {
+      if (name == null && categoryName == null) {
+        return ResponseEntity.ok(productService.findAllProductsPageable(isActive, p));
+      }
+      if (name == null) {
+        return ResponseEntity.ok(productService.findAllProductsByCategyPageable(categoryName, isActive, p));
+      }
+      if (categoryName == null) {
+        return ResponseEntity.ok(productService.searchProducts(name, isActive, p));
+      }
+      return ResponseEntity.ok(productService.searchProductsByCategories(name, categoryName, isActive, p));
+    } catch (ProductException e) {
+      return ResponseEntity.unprocessableEntity()
+          .body(new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, "Unprocessable Entity", e.getLocalizedMessage()));
     }
-    return ResponseEntity.ok(productService.searchProducts(name, isActive, p));
   }
 
   /**

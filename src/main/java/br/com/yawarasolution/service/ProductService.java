@@ -80,6 +80,50 @@ public class ProductService {
   }
 
   /**
+   * It returns a page of products by category name and isActive.
+   * 
+   * @param categoryName The name of the category you want to search for.
+   * @param isActive     true
+   * @param pageable     This is the pageable object that contains the page
+   *                     number, page size, and sort
+   *                     order.
+   * @return A Page of ProductResponseDTOs
+   */
+  public Page<ProductResponseDTO> findAllProductsByCategyPageable(String categoryName, Boolean isActive,
+      Pageable pageable) {
+    Page<Product> products = productRepository.findByCategory_NameIgnoreCaseAndIsActive(categoryName, isActive,
+        pageable);
+    return products.map(ProductResponseDTO::new);
+  }
+
+  /**
+   * It searches for products by name, category name and isActive flag
+   * 
+   * @param name         The name of the product
+   * @param categoryName The name of the category to search for.
+   * @param isActive     boolean
+   * @param pageable     This is the pageable object that contains the page number
+   *                     and page size.
+   * @return A Page of ProductResponseDTOs
+   */
+  public Page<ProductResponseDTO> searchProductsByCategories(String name, String categoryName, boolean isActive,
+      Pageable pageable) {
+    if (pageable == null || pageable.getPageNumber() < 0 || pageable.getPageSize() < 1) {
+      throw new ProductException("Invalid page request");
+    }
+
+    Page<Product> products = productRepository.findByNameContainingIgnoreCaseAndCategory_NameIgnoreCaseAndIsActive(name,
+        categoryName, isActive, pageable);
+
+    if (products == null || products.isEmpty()) {
+      throw new ProductException(
+          "No products found for name: " + name + " and isActive: " + isActive + " and category: " + categoryName);
+    }
+
+    return products.map(ProductResponseDTO::new);
+  }
+
+  /**
    * It takes a name, isActive and pageable as input and returns a page of
    * ProductResponseDTO
    * 
@@ -91,7 +135,17 @@ public class ProductService {
    * @return A Page of ProductResponseDTOs
    */
   public Page<ProductResponseDTO> searchProducts(String name, Boolean isActive, Pageable pageable) {
+
+    if (pageable == null || pageable.getPageNumber() < 0 || pageable.getPageSize() < 1) {
+      throw new ProductException("Invalid page request");
+    }
+
     Page<Product> products = productRepository.findByNameContainingIgnoreCaseAndIsActive(name, isActive, pageable);
+
+    if (products == null || products.isEmpty()) {
+      throw new ProductException("No products found for name: " + name + " and isActive: " + isActive);
+    }
+
     return products.map(ProductResponseDTO::new);
   }
 
