@@ -14,12 +14,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import br.com.yawarasolution.DTO.userpurchase.StatusRequest;
 import br.com.yawarasolution.DTO.userpurchase.UserPurchaseRequestDTO;
 import br.com.yawarasolution.DTO.userpurchase.UserPurchaseResponseDTO;
 import br.com.yawarasolution.enums.PurchaseStatus;
@@ -123,14 +125,14 @@ public class UserPurchaseController {
   @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
   @GetMapping("/search")
   @SecurityRequirement(name = "token")
-  @Operation(summary = "Search Orders", description = "Search Orders", responses = {
+  @Operation(summary = "Search Orders", description = "Search Orders, Logged user", responses = {
       @ApiResponse(responseCode = "200", description = "Successfully get!", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserPurchaseResponseDTO.class))),
       @ApiResponse(responseCode = "400", ref = "BadRequest"),
       @ApiResponse(responseCode = "401", ref = "badcredentials"),
       @ApiResponse(responseCode = "403", ref = "forbidden"),
       @ApiResponse(responseCode = "500", ref = "internalServerError")
   }, parameters = {
-      @Parameter(name = "status", description = "The purchase status 1 - PENDING 2 - APPROVED 3 - REJECTED", example = "1"),
+      @Parameter(name = "status", description = "The purchase status:<br>1 - PENDING<br>2 - APPROVED<br>3 - DECLINED<br>4 - REFUNDED<br>5 - PROCESSING<br>6 - SHIPPED<br>7 - DELIVERED<br>8 - CANCELED", example = "1"),
       @Parameter(name = "page", description = "The page number", example = "0"),
       @Parameter(name = "size", description = "The page size", example = "10")
   })
@@ -191,4 +193,50 @@ public class UserPurchaseController {
           .body(new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, "Unprocessable Entity", e.getLocalizedMessage()));
     }
   }
+
+  /**
+   * Update Status order, only ADMIN
+   * 
+   * The purchase status:
+   * 1 - PENDING 2 - APPROVED 3 - DECLINED 4 - REFUNDED 5 - PROCESSING 6 - SHIPPED
+   * 7 - DELIVERED 8 - CANCELED
+   * 
+   * @param id            The id of the order
+   * @param statusRequest
+   * @return The response is a UserPurchaseResponseDTO object.
+   */
+  @PreAuthorize("hasRole('ADMIN')")
+  @PutMapping("/update-status/{id}")
+  @SecurityRequirement(name = "token")
+  @Operation(summary = "Update Status order", description = "Update Status order, only ADMIN<br>The purchase status:<br>1 - PENDING<br>2 - APPROVED<br>3 - DECLINED<br>4 - REFUNDED<br>5 - PROCESSING<br>6 - SHIPPED<br>7 - DELIVERED<br>8 - CANCELED", responses = {
+      @ApiResponse(responseCode = "201", description = "Successfully Register!", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserPurchaseResponseDTO.class))),
+      @ApiResponse(responseCode = "400", ref = "BadRequest"),
+      @ApiResponse(responseCode = "401", ref = "badcredentials"),
+      @ApiResponse(responseCode = "403", ref = "forbidden"),
+      @ApiResponse(responseCode = "422", ref = "unprocessableEntity"),
+      @ApiResponse(responseCode = "500", ref = "internalServerError")
+  })
+  public ResponseEntity<Object> updateStatus(@PathVariable UUID id, @Valid @RequestBody StatusRequest statusRequest) {
+    try {
+      PurchaseStatus purchaseStatus;
+      try {
+        // Tenta converter a string em enum
+        purchaseStatus = PurchaseStatus.valueOf(statusRequest.getPurchaseStatus());
+      } catch (IllegalArgumentException e) {
+        // Se não conseguir, tenta converter o número em enum
+        try {
+          purchaseStatus = PurchaseStatus.fromCodigo(statusRequest.getPurchaseStatus());
+        } catch (NullPointerException ex) {
+          return ResponseEntity.unprocessableEntity()
+              .body(new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, "Invalid status", e.getLocalizedMessage()));
+        }
+      }
+      return ResponseEntity.ok(userPurchaseService.updateOrderStatus(id, purchaseStatus));
+
+    } catch (UserPurchaseException e) {
+      return ResponseEntity.unprocessableEntity()
+          .body(new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, "Unprocessable Entity", e.getLocalizedMessage()));
+    }
+  }
+
 }

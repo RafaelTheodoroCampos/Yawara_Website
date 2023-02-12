@@ -189,7 +189,7 @@ public class ProductController {
       @ApiResponse(responseCode = "422", ref = "unprocessableEntity"),
       @ApiResponse(responseCode = "500", ref = "internalServerError")
   })
-  public ResponseEntity<Object> update(@Valid @PathVariable UUID id, @RequestBody ProducRequestDTO produto) {
+  public ResponseEntity<Object> update(@PathVariable UUID id, @Valid @RequestBody ProducRequestDTO produto) {
     try {
       ProductResponseDTO response = productService.updateProduct(id, produto);
       URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
