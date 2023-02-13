@@ -20,6 +20,8 @@ public class UserResponseDTO {
 
   private String username;
 
+  private String name;
+
   private String email;
 
   private Boolean isActive;
@@ -31,6 +33,7 @@ public class UserResponseDTO {
   public UserResponseDTO(User u) {
     this.id = u.getId();
     this.username = u.getUsername();
+    this.name = u.getName();
     this.email = u.getEmail();
     this.isActive = u.getIsActive();
     this.imageUrl = u.getImageUrl();

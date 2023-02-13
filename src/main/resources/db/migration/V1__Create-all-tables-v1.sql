@@ -10,6 +10,7 @@ CREATE TABLE
     users (
         id UUID,
         username varchar(100) NOT NULL,
+        name varchar(100) NOT NULL,
         password varchar(255) NOT NULL,
         activationCode varchar(255),
         isActive boolean NOT NULL,

@@ -14,6 +14,8 @@ public class SignupRegisterResponse {
 
   private String username;
 
+  private String name;
+
   private String email;
 
   private String imageUrl;
@@ -23,6 +25,7 @@ public class SignupRegisterResponse {
   public SignupRegisterResponse(User u, List<ERole> roles2) {
     this.id = u.getId();
     this.username = u.getUsername();
+    this.name = u.getName();
     this.email = u.getEmail();
     this.imageUrl = u.getImageUrl();
     this.roles = roles2;

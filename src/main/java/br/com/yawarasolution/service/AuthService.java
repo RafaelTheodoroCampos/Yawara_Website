@@ -138,7 +138,8 @@ public class AuthService {
     // Create new user's account
     User user = new User(signUpRequest.getUsername(), signUpRequest.getEmail(),
         encoder.encode(signUpRequest.getPassword()), false, null, Instant.now(), null,
-        "https://cdn.pixabay.com/photo/2016/04/01/11/25/avatar-1300331_960_720.png", signUpRequest.getTelefone());
+        "https://cdn.pixabay.com/photo/2016/04/01/11/25/avatar-1300331_960_720.png", signUpRequest.getTelefone(),
+        signUpRequest.getName());
 
     Set<Role> roles = new HashSet<>();
     String activationCode = UUID.randomUUID().toString();

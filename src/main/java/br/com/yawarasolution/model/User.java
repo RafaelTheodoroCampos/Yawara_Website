@@ -38,6 +38,10 @@ public class User {
   private String username;
 
   @NotBlank
+  @Size(max = 100)
+  private String name;
+
+  @NotBlank
   @Email
   private String email;
 
@@ -74,7 +78,7 @@ public class User {
   }
 
   public User(String username, String email, String password, Boolean isActive, Instant lastLogin, Instant createdAt,
-      Instant updatedAt, String imageUrl, String telefone) {
+      Instant updatedAt, String imageUrl, String telefone, String name) {
     this.username = username;
     this.email = email;
     this.password = password;
@@ -84,6 +88,7 @@ public class User {
     this.updatedAt = updatedAt;
     this.imageUrl = imageUrl;
     this.telefone = telefone;
+    this.name = name;
   }
 
 }
